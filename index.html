@@ -1,11 +1,104 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="0; url=logic_train.html">
-    <title>תרגול לוגיקה</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>תרגול בחינה פסיכומטרית</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --muted: #64748b;
+            --border: #cbd5e1;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 640px;
+        }
+
+        h1 {
+            color: #0f172a;
+            margin-bottom: 4px;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            margin-top: 0;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 0.9rem;
+            color: var(--muted);
+            font-weight: bold;
+            margin: 24px 0 8px;
+        }
+
+        .module {
+            display: block;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-right: 4px solid var(--primary);
+            border-radius: 10px;
+            padding: 16px 18px;
+            margin-bottom: 12px;
+            text-decoration: none;
+            color: var(--text);
+            box-shadow: 0 1px 3px rgb(0 0 0 / 0.06);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .module:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 10px rgb(0 0 0 / 0.08);
+        }
+
+        .module h2 {
+            font-size: 1.1rem;
+            margin: 0 0 4px;
+            color: #0f172a;
+        }
+
+        .module p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 12px;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    <a href="logic_train.html">לתרגול לוגיקה</a>
+    <div class="container">
+        <h1>תרגול בחינה פסיכומטרית</h1>
+        <p class="subtitle">בחר נושא לתרגול.</p>
+
+        <!-- להוספת מודול חדש: יוצרים קובץ HTML בתיקייה ומוסיפים כאן קישור -->
+        <div class="section-title">חשיבה מילולית</div>
+        <a class="module" href="logic_train.html">
+            <h2>לוגיקה ומשפטי טענה</h2>
+            <p>שקילות ושלילה: כל/יש, אם-אז, או/וגם ודה-מורגן. שאלות חדשות בכל תרגול.</p>
+        </a>
+    </div>
 </body>
+
 </html>
