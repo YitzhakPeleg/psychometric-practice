@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>תרגול לוגיקה ומשפטי טענה</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --muted: #64748b;
+            --border: #cbd5e1;
+            --soft: #f1f5f9;
+            --success: #16a34a;
+            --success-bg: #dcfce7;
+            --error: #dc2626;
+            --error-bg: #fee2e2;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            width: 100%;
+            max-width: 640px;
+            padding: 30px;
+            box-sizing: border-box;
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: #0f172a;
+            margin-top: 0;
+        }
+
+        h3 {
+            margin-top: 24px;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        button.secondary {
+            background-color: var(--muted);
+        }
+
+        button.secondary:hover {
+            background-color: #475569;
+        }
+
+        button.link {
+            background: none;
+            color: var(--muted);
+            padding: 0;
+            font-weight: normal;
+            text-decoration: underline;
+            font-size: 0.85rem;
+        }
+
+        .options-group {
+            margin: 20px 0;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0;
+            font-weight: 500;
+        }
+
+        select,
+        input[type="number"] {
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            font-size: 1rem;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 5px;
+        }
+
+        .type-list label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 6px 0;
+            font-weight: normal;
+        }
+
+        .type-list .lvl {
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .hud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: var(--muted);
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+
+        .question-box {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: var(--soft);
+            border-radius: 8px;
+            border-right: 4px solid var(--primary);
+            line-height: 1.6;
+        }
+
+        .answers-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .answer-btn {
+            display: flex;
+            gap: 10px;
+            background-color: #ffffff;
+            color: var(--text);
+            border: 1px solid var(--border);
+            text-align: right;
+            padding: 12px 15px;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: normal;
+            line-height: 1.5;
+            transition: all 0.2s;
+            margin: 0;
+        }
+
+        .answer-btn .num {
+            color: var(--muted);
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .answer-btn:hover:not(:disabled) {
+            background-color: var(--bg);
+            border-color: var(--primary);
+        }
+
+        .answer-btn:disabled {
+            cursor: default;
+        }
+
+        .answer-btn.correct {
+            background-color: var(--success-bg);
+            border-color: var(--success);
+            font-weight: bold;
+        }
+
+        .answer-btn.wrong {
+            background-color: var(--error-bg);
+            border-color: var(--error);
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            display: none;
+            line-height: 1.5;
+        }
+
+        .feedback .title {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .feedback .note {
+            font-size: 0.95rem;
+            display: block;
+            margin-top: 6px;
+            color: var(--text);
+        }
+
+        .feedback.correct {
+            background-color: var(--success-bg);
+            color: var(--success);
+            display: block;
+        }
+
+        .feedback.incorrect {
+            background-color: var(--error-bg);
+            color: var(--error);
+            display: block;
+        }
+
+        .hint {
+            color: var(--muted);
+            font-size: 0.8rem;
+            margin-top: 10px;
+        }
+
+        .stats-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .stats-table th,
+        .stats-table td {
+            border: 1px solid var(--border);
+            padding: 8px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .stats-table td.text {
+            text-align: right;
+        }
+
+        .stats-table th {
+            background-color: var(--soft);
+        }
+
+        .ok {
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        .bad {
+            color: var(--error);
+            font-weight: bold;
+        }
+
+        .button-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 18px;
+            }
+
+            .question-box {
+                font-size: 1.05rem;
+            }
+
+            .stats-table th,
+            .stats-table td {
+                padding: 5px;
+                font-size: 0.8rem;
+            }
+
+            .hint {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- מסך 1: דף הסבר והגדרות -->
+        <div id="screen-intro" class="screen active">
+            <h1>תרגול לוגיקה ומשפטי טענה</h1>
+            <p>ברוך הבא למערכת האימון הממוקדת למשפטי טענה (שקילות ושלילה). המשפטים בתרגול זה עשויים להיות אבסורדיים
+                לחלוטין מבחינה מציאותית כדי לבחון שליטה נקייה בחוקים הלוגיים. השאלות נוצרות מחדש בכל תרגול.</p>
+
+            <h3>תזכורת מהירה לכללים:</h3>
+            <ul>
+                <li><strong>טענה שקולה (שומרת משמעות):</strong> החלפת סדר + שלילת שני הצדדים.<br>"אם A אז B" ⇔ "אם לא B אז לא A".</li>
+                <li><strong>שלילה של "כל"/"יש":</strong> החלפת כמת (כל ↔ יש) + שלילת התוצאה.<br>"כל A הם B" ⇐ שלילה ⇒ "יש A שאינו B".</li>
+                <li><strong>שלילה של "אם A אז B":</strong> "A וגם לא B".</li>
+                <li><strong>דה-מורגן:</strong> שלילה של "A או B" היא "לא A וגם לא B", ושלילה של "A וגם B" היא "לא A או לא B".</li>
+            </ul>
+
+            <div class="options-group">
+                <label for="count-select">מספר שאלות:</label>
+                <select id="count-select">
+                    <option value="8">8</option>
+                    <option value="12" selected>12</option>
+                    <option value="16">16</option>
+                    <option value="24">24</option>
+                </select>
+            </div>
+
+            <div class="options-group">
+                <label for="order-select">סדר השאלות:</label>
+                <select id="order-select">
+                    <option value="random">אקראי לגמרי</option>
+                    <option value="graded">מדורג (קל ← קשה, אקראי בתוך כל רמה)</option>
+                </select>
+            </div>
+
+            <div class="options-group">
+                <label>סוגי שאלות:</label>
+                <div class="type-list" id="type-list"></div>
+            </div>
+
+            <div class="options-group">
+                <label for="mode-select">בחר מצב מדידת זמן:</label>
+                <select id="mode-select" onchange="toggleTimerSettings()">
+                    <option value="stopwatch">סטופר רגיל (מדידת זמן לכל שאלה)</option>
+                    <option value="timer">טיימר מוגבל (זמן קצוב מראש לכל שאלה)</option>
+                </select>
+            </div>
+
+            <div class="options-group" id="timer-setting-group" style="display: none;">
+                <label for="time-per-q">שניות לכל שאלה (5–60):</label>
+                <input type="number" id="time-per-q" value="20" min="5" max="60">
+            </div>
+
+            <div id="settings-error" class="bad" style="display: none;">יש לבחור לפחות סוג שאלה אחד.</div>
+            <button onclick="startQuiz()">התחל תרגול</button>
+
+            <div id="history-section" style="display: none;">
+                <h3>ההתקדמות שלך</h3>
+                <table class="stats-table">
+                    <thead>
+                        <tr>
+                            <th>תאריך</th>
+                            <th>ציון</th>
+                            <th>זמן ממוצע</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-rows"></tbody>
+                </table>
+                <div id="history-errors"></div>
+                <button class="link" onclick="clearHistory()">נקה היסטוריה</button>
+            </div>
+        </div>
+
+        <!-- מסך 2: שאלון -->
+        <div id="screen-quiz" class="screen">
+            <div class="hud">
+                <span id="hud-progress"></span>
+                <span id="hud-level"></span>
+                <span id="hud-timer"></span>
+            </div>
+
+            <div class="question-box" id="question-text"></div>
+
+            <div class="answers-grid" id="answers-container"></div>
+
+            <div class="feedback" id="feedback-box"></div>
+            <button id="next-btn" style="display: none;" onclick="nextQuestion()">לשאלה הבאה</button>
+            <div class="hint">קיצורי מקלדת: 1–4 לבחירת תשובה, Enter לשאלה הבאה.</div>
+        </div>
+
+        <!-- מסך 3: סיכום סטטיסטיקה -->
+        <div id="screen-summary" class="screen">
+            <h2>סיכום תוצאות התרגול</h2>
+            <p id="summary-overview"></p>
+
+            <div id="errors-section">
+                <h3>סוגי הטעויות שלך:</h3>
+                <table class="stats-table">
+                    <thead>
+                        <tr>
+                            <th>טעות</th>
+                            <th>כמה פעמים</th>
+                            <th>מה לזכור</th>
+                        </tr>
+                    </thead>
+                    <tbody id="error-rows"></tbody>
+                </table>
+            </div>
+
+            <h3>לפי סוג שאלה:</h3>
+            <table class="stats-table">
+                <thead>
+                    <tr>
+                        <th>סוג</th>
+                        <th>נכונות</th>
+                        <th>זמן ממוצע</th>
+                    </tr>
+                </thead>
+                <tbody id="type-rows"></tbody>
+            </table>
+
+            <h3>פירוט לפי שאלות:</h3>
+            <table class="stats-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>סוג</th>
+                        <th>תוצאה</th>
+                        <th>זמן</th>
+                    </tr>
+                </thead>
+                <tbody id="stats-rows"></tbody>
+            </table>
+
+            <div class="button-row">
+                <button id="retry-btn" onclick="retryWrong()"></button>
+                <button class="secondary" onclick="showIntro()">תרגול חדש</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ---------- אוצר מילים (אבסורדי בכוונה) ----------
+        // g: מין דקדוקי של שם העצם. who: "מה" לחפצים/בעלי חיים, "מי" לבני אדם
+        const SUBJECTS = [
+            { sg: 'בננה', pl: 'בננות', g: 'f', who: 'מה' },
+            { sg: 'חתול', pl: 'חתולים', g: 'm', who: 'מה' },
+            { sg: 'אבן', pl: 'אבנים', g: 'f', who: 'מה' },
+            { sg: 'שולחן', pl: 'שולחנות', g: 'm', who: 'מה' },
+            { sg: 'פיל', pl: 'פילים', g: 'm', who: 'מה' },
+            { sg: 'מחשב', pl: 'מחשבים', g: 'm', who: 'מה' },
+            { sg: 'כרית', pl: 'כריות', g: 'f', who: 'מה' },
+            { sg: 'מטרייה', pl: 'מטריות', g: 'f', who: 'מה' },
+            { sg: 'עגבנייה', pl: 'עגבניות', g: 'f', who: 'מה' },
+            { sg: 'פינגווין', pl: 'פינגווינים', g: 'm', who: 'מה' },
+            { sg: 'ספה', pl: 'ספות', g: 'f', who: 'מה' },
+            { sg: 'מקרר', pl: 'מקררים', g: 'm', who: 'מה' },
+            { sg: 'גמל', pl: 'גמלים', g: 'm', who: 'מה' },
+            { sg: 'צפרדע', pl: 'צפרדעים', g: 'f', who: 'מה' },
+            { sg: 'שוטר', pl: 'שוטרים', g: 'm', who: 'מי' },
+            { sg: 'טייס', pl: 'טייסים', g: 'm', who: 'מי' },
+            { sg: 'דוור', pl: 'דוורים', g: 'm', who: 'מי' },
+            { sg: 'נהג', pl: 'נהגים', g: 'm', who: 'מי' }
+        ];
+
+        // נשוא בארבע צורות: זכר/נקבה × יחיד/רבים
+        const P = (ms, fs, mp, fp, tail = '') => ({ ms: ms + tail, fs: fs + tail, mp: mp + tail, fp: fp + tail });
+        const PREDICATES = [
+            P('מעופף', 'מעופפת', 'מעופפים', 'מעופפות'),
+            P('עשוי', 'עשויה', 'עשויים', 'עשויות', ' מברזל'),
+            P('עשוי', 'עשויה', 'עשויים', 'עשויות', ' מגבינה'),
+            P('מנגן', 'מנגנת', 'מנגנים', 'מנגנות', ' בפסנתר'),
+            P('סגול', 'סגולה', 'סגולים', 'סגולות'),
+            P('נובח', 'נובחת', 'נובחים', 'נובחות'),
+            P('דובר', 'דוברת', 'דוברים', 'דוברות', ' צרפתית'),
+            P('בולע', 'בולעת', 'בולעים', 'בולעות', ' עננים'),
+            P('שוחה', 'שוחה', 'שוחים', 'שוחות', ' בשוקו'),
+            P('מדקלם', 'מדקלמת', 'מדקלמים', 'מדקלמות', ' שירה'),
+            P('רוקד', 'רוקדת', 'רוקדים', 'רוקדות', ' טנגו'),
+            P('זוהר', 'זוהרת', 'זוהרים', 'זוהרות', ' בחושך'),
+            P('פותר', 'פותרת', 'פותרים', 'פותרות', ' תשבצים'),
+            P('הולך', 'הולכת', 'הולכים', 'הולכות', ' על התקרה'),
+            P('אוהב', 'אוהבת', 'אוהבים', 'אוהבות', ' מתמטיקה')
+        ];
+
+        const NEG = { ms: 'אינו', fs: 'אינה', mp: 'אינם', fp: 'אינן' };
+        const pos = (p, g, n) => p[g + n];
+        const neg = (p, g, n) => `${NEG[g + n]} ${p[g + n]}`;
+
+        // ---------- בוני משפטים ----------
+        // משפטי כמת: s = נושא, p = נשוא
+        const allX = (s, p) => `כל ה${s.pl} ${pos(p, s.g, 'p')}`;
+        const someX = (s, p) => `יש ${s.sg} ש${pos(p, s.g, 's')}`;
+        const someNotX = (s, p) => `יש ${s.sg} ש${neg(p, s.g, 's')}`;
+        const noneX = (s, p) => `אף ${s.sg} ${neg(p, s.g, 's')}`;
+        const allNotX = (s, p) => `כל ה${s.pl} ${neg(p, s.g, 'p')}`;
+        const notAllX = (s, p) => `לא כל ה${s.pl} ${pos(p, s.g, 'p')}`;
+        const contraX = (s, p) => `כל ${s.who} ש${neg(p, 'm', 's')} אינו ${s.sg}`;
+        const converseX = (s, p) => `כל ${s.who} ש${pos(p, 'm', 's')} הוא ${s.sg}`;
+        const inverseX = (s, p) => `כל ${s.who} שאינו ${s.sg} ${neg(p, 'm', 's')}`;
+
+        // פסוקים: "הפיל סגול" / "הפיל אינו סגול"
+        const prop = (s, p) => ({ pos: `ה${s.sg} ${pos(p, s.g, 's')}`, neg: `ה${s.sg} ${neg(p, s.g, 's')}` });
+        const IF = (a, b) => `אם ${a}, אז ${b}`;
+        const AND = (a, b) => `${a} וגם ${b}`;
+        const OR = (a, b) => `${a} או ש${b}`;
+
+        // ---------- סוגי טעויות ----------
+        const ERRORS = {
+            converse: { label: 'היפוך סדר בלי שלילה', tip: '"כל A הם B" לא אומר ש"כל B הם A". בשקילות צריך גם להפוך את הסדר וגם לשלול את שני הצדדים.' },
+            inverse: { label: 'שלילה בלי היפוך סדר', tip: 'שללת את שני הצדדים אבל השארת את הסדר. בשקילות צריך גם להחליף את הסדר.' },
+            equiv_vs_neg: { label: 'בלבול בין שקילות לשלילה', tip: 'שים לב למה נשאל: טענה שקולה אומרת אותו דבר, ושלילה אומרת את ההפך.' },
+            quantifier_kept: { label: 'שלילה בלי החלפת כמת', tip: 'בשלילה הכמת מתחלף: "כל" הופך ל"יש" ו"יש" הופך ל"כל/אף". אסור להשאיר אותו.' },
+            quantifier_only: { label: 'החלפת כמת בלי שלילה', tip: 'החלפת "כל" ↔ "יש" אבל שכחת לשלול את התוצאה.' },
+            not_all: { label: '"לא כולם" במקום "אף אחד"', tip: 'השלילה של "יש A שהוא B" היא "אף A אינו B", ולא "לא כל ה-A הם B".' },
+            cond_kept: { label: 'השלילה נשארה "אם... אז"', tip: 'השלילה של "אם A אז B" היא לא משפט תנאי. היא "A וגם לא B".' },
+            partial_neg: { label: 'שלילה של החלק הלא נכון', tip: 'בשלילת "אם A אז B", החלק A נשאר כמו שהוא ורק B נשלל. בשלילת "או" שני החלקים נשללים.' },
+            demorgan: { label: 'שכחת את דה-מורגן', tip: 'כששוללים "או" הוא הופך ל"וגם", וכששוללים "וגם" הוא הופך ל"או".' },
+            timeout: { label: 'הזמן נגמר', tip: 'נסה לזהות קודם את סוג השאלה (שקילות/שלילה) ורק אז לחפש את התבנית.' }
+        };
+
+        // ---------- מחוללי שאלות (אחד לכל סוג משפט) ----------
+        const LEVEL_ORDER = { 'קלה': 0, 'בינונית': 1, 'מתקדמת': 2 };
+
+        const TYPES = {
+            all_equiv: {
+                name: '"כל" — שקילות', level: 'קלה',
+                explanation: '"כל A הם B" שקולה ל"כל מה שאינו B אינו A": מחליפים סדר ושוללים את שני הצדדים.',
+                gen() {
+                    const [s] = pick(SUBJECTS, 1), [p] = pick(PREDICATES, 1);
+                    return {
+                        text: `נתונה הטענה: "${allX(s, p)}". איזו טענה שקולה לה?`,
+                        correct: contraX(s, p),
+                        wrong: [[converseX(s, p), 'converse'], [inverseX(s, p), 'inverse'], [someNotX(s, p), 'equiv_vs_neg']]
+                    };
+                }
+            },
+            all_neg: {
+                name: '"כל" — שלילה', level: 'קלה',
+                explanation: 'השלילה של "כל A הם B" היא "יש A שאינו B": מחליפים "כל" ל"יש" ושוללים את התוצאה. מספיקה דוגמה נגדית אחת.',
+                gen() {
+                    const [s] = pick(SUBJECTS, 1), [p] = pick(PREDICATES, 1);
+                    const tooStrong = Math.random() < 0.5 ? allNotX(s, p) : noneX(s, p);
+                    return {
+                        text: `נתונה הטענה: "${allX(s, p)}". מהי השלילה שלה?`,
+                        correct: someNotX(s, p),
+                        wrong: [[tooStrong, 'quantifier_kept'], [someX(s, p), 'quantifier_only'], [contraX(s, p), 'equiv_vs_neg']]
+                    };
+                }
+            },
+            some_neg: {
+                name: '"יש" — שלילה', level: 'בינונית',
+                explanation: 'השלילה של "יש A שהוא B" היא "אף A אינו B" (כלומר "כל ה-A אינם B"): מחליפים "יש" ל"כל" ושוללים את התוצאה.',
+                gen() {
+                    const [s] = pick(SUBJECTS, 1), [p] = pick(PREDICATES, 1);
+                    const correct = Math.random() < 0.5 ? allNotX(s, p) : noneX(s, p);
+                    return {
+                        text: `נתונה הטענה: "${someX(s, p)}". מהי השלילה שלה?`,
+                        correct,
+                        wrong: [[allX(s, p), 'quantifier_only'], [someNotX(s, p), 'quantifier_kept'], [notAllX(s, p), 'not_all']]
+                    };
+                }
+            },
+            if_equiv: {
+                name: '"אם... אז" — שקילות', level: 'בינונית',
+                explanation: '"אם A אז B" שקולה ל"אם לא B אז לא A": היפוך כיוון + שלילת שני הצדדים.',
+                gen() {
+                    const [A, B] = props(2);
+                    return {
+                        text: `נתונה הטענה: "${IF(A.pos, B.pos)}". איזו טענה שקולה לה?`,
+                        correct: IF(B.neg, A.neg),
+                        wrong: [[IF(B.pos, A.pos), 'converse'], [IF(A.neg, B.neg), 'inverse'], [AND(A.pos, B.neg), 'equiv_vs_neg']]
+                    };
+                }
+            },
+            or_neg: {
+                name: '"או" — שלילה', level: 'בינונית',
+                explanation: 'לפי דה-מורגן, השלילה של "A או B" היא "לא A וגם לא B".',
+                gen() {
+                    const [A, B] = props(2);
+                    return {
+                        text: `נתונה הטענה: "${OR(A.pos, B.pos)}". מהי השלילה שלה?`,
+                        correct: AND(A.neg, B.neg),
+                        wrong: [[OR(A.neg, B.neg), 'demorgan'], [AND(A.neg, B.pos), 'partial_neg'], [IF(A.neg, B.pos), 'equiv_vs_neg']]
+                    };
+                }
+            },
+            if_neg: {
+                name: '"אם... אז" — שלילה', level: 'מתקדמת',
+                explanation: 'השלילה של "אם A אז B" היא "A וגם לא B": המקרה היחיד שבו הטענה נכשלת הוא ש-A קורה ו-B לא.',
+                gen() {
+                    const [A, B] = props(2);
+                    return {
+                        text: `נתונה הטענה: "${IF(A.pos, B.pos)}". מהי השלילה שלה?`,
+                        correct: AND(A.pos, B.neg),
+                        wrong: [[IF(A.pos, B.neg), 'cond_kept'], [AND(A.neg, B.pos), 'partial_neg'], [IF(B.neg, A.neg), 'equiv_vs_neg']]
+                    };
+                }
+            },
+            or_equiv: {
+                name: '"אם A או B" — שקילות', level: 'מתקדמת',
+                explanation: '"אם A או B אז C" שקולה ל"אם לא C אז לא A וגם לא B": היפוך + שלילה, ובשלילת ה"או" הוא הופך ל"וגם" (דה-מורגן).',
+                gen() {
+                    const [A, B, C] = props(3);
+                    return {
+                        text: `נתונה הטענה: "${IF(OR(A.pos, B.pos), C.pos)}". איזו טענה שקולה לה?`,
+                        correct: IF(C.neg, AND(A.neg, B.neg)),
+                        wrong: [
+                            [IF(C.neg, OR(A.neg, B.neg)), 'demorgan'],
+                            [IF(C.pos, OR(A.pos, B.pos)), 'converse'],
+                            [IF(AND(A.neg, B.neg), C.neg), 'inverse']
+                        ]
+                    };
+                }
+            },
+            and_equiv: {
+                name: '"אז B וגם C" — שקילות', level: 'מתקדמת',
+                explanation: '"אם A אז B וגם C" שקולה ל"אם לא B או לא C אז לא A": היפוך + שלילה, ובשלילת ה"וגם" הוא הופך ל"או" (דה-מורגן).',
+                gen() {
+                    const [A, B, C] = props(3);
+                    return {
+                        text: `נתונה הטענה: "${IF(A.pos, AND(B.pos, C.pos))}". איזו טענה שקולה לה?`,
+                        correct: IF(OR(B.neg, C.neg), A.neg),
+                        wrong: [
+                            [IF(AND(B.neg, C.neg), A.neg), 'demorgan'],
+                            [IF(AND(B.pos, C.pos), A.pos), 'converse'],
+                            [IF(A.neg, OR(B.neg, C.neg)), 'inverse']
+                        ]
+                    };
+                }
+            }
+        };
+
+        function shuffle(arr) {
+            const a = arr.slice();
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+
+        const pick = (arr, k) => shuffle(arr).slice(0, k);
+
+        // k פסוקים עם נושאים ונשואים שונים זה מזה
+        function props(k) {
+            const subjects = pick(SUBJECTS, k), predicates = pick(PREDICATES, k);
+            return subjects.map((s, i) => prop(s, predicates[i]));
+        }
+
+        function makeQuestion(typeKey) {
+            const t = TYPES[typeKey];
+            const g = t.gen();
+            return {
+                type: typeKey,
+                level: t.level,
+                text: g.text,
+                explanation: t.explanation,
+                options: [{ text: g.correct, correct: true, error: null }]
+                    .concat(g.wrong.map(([text, error]) => ({ text, correct: false, error })))
+            };
+        }
+
+        function buildQuiz(typeKeys, count, order) {
+            // חלוקה שווה בין הסוגים שנבחרו
+            let keys = [];
+            while (keys.length < count) keys = keys.concat(shuffle(typeKeys));
+            const questions = keys.slice(0, count).map(makeQuestion);
+            return order === 'graded' ? sortByLevel(questions) : shuffle(questions);
+        }
+
+        function sortByLevel(questions) {
+            return shuffle(questions).sort((a, b) => LEVEL_ORDER[a.level] - LEVEL_ORDER[b.level]);
+        }
+
+        // ---------- אחסון מקומי (עטוף ב-try כי לא תמיד זמין) ----------
+        const STORAGE_HISTORY = 'logicTrain.history.v1';
+        const STORAGE_SETTINGS = 'logicTrain.settings.v1';
+
+        function load(key, fallback) {
+            try {
+                const raw = localStorage.getItem(key);
+                return raw ? JSON.parse(raw) : fallback;
+            } catch (e) {
+                return fallback;
+            }
+        }
+
+        function save(key, value) {
+            try {
+                localStorage.setItem(key, JSON.stringify(value));
+            } catch (e) { /* אין אחסון - ממשיכים בלי */ }
+        }
+
+        // ---------- מצב ----------
+        let questions = [];
+        let currentQuestionIndex = 0;
+        let results = [];
+        let answered = false;
+        let isRetryRound = false;
+        let timerMode = 'stopwatch';
+        let timeLimitPerQ = 20;
+        let orderMode = 'random';
+
+        let startTime = 0;
+        let timerInterval = null;
+
+        const $ = (id) => document.getElementById(id);
+
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            $(id).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        // ---------- מסך פתיחה ----------
+        function renderTypeList() {
+            const settings = load(STORAGE_SETTINGS, {});
+            const selected = settings.types || Object.keys(TYPES);
+            const list = $('type-list');
+            list.innerHTML = '';
+            Object.entries(TYPES)
+                .sort((a, b) => LEVEL_ORDER[a[1].level] - LEVEL_ORDER[b[1].level])
+                .forEach(([key, t]) => {
+                    const label = document.createElement('label');
+                    const cb = document.createElement('input');
+                    cb.type = 'checkbox';
+                    cb.value = key;
+                    cb.checked = selected.includes(key);
+                    const name = document.createElement('span');
+                    name.textContent = t.name;
+                    const lvl = document.createElement('span');
+                    lvl.className = 'lvl';
+                    lvl.textContent = `(${t.level})`;
+                    label.append(cb, name, lvl);
+                    list.appendChild(label);
+                });
+
+            if (settings.count) $('count-select').value = settings.count;
+            if (settings.order) $('order-select').value = settings.order;
+            if (settings.mode) $('mode-select').value = settings.mode;
+            if (settings.timeLimit) $('time-per-q').value = settings.timeLimit;
+            toggleTimerSettings();
+        }
+
+        function toggleTimerSettings() {
+            $('timer-setting-group').style.display = $('mode-select').value === 'timer' ? 'block' : 'none';
+        }
+
+        function renderHistory() {
+            const history = load(STORAGE_HISTORY, []);
+            $('history-section').style.display = history.length ? 'block' : 'none';
+            if (!history.length) return;
+
+            const tbody = $('history-rows');
+            tbody.innerHTML = '';
+            history.slice(-8).reverse().forEach(h => {
+                const pct = Math.round(100 * h.correct / h.total);
+                addRow(tbody, [
+                    new Date(h.ts).toLocaleDateString('he-IL') + (h.retry ? ' (חזרה)' : ''),
+                    `${h.correct}/${h.total} (${pct}%)`,
+                    `${h.avgTime}s`
+                ]);
+            });
+
+            // הטעויות הנפוצות ב-10 התרגולים האחרונים
+            const counts = {};
+            history.slice(-10).forEach(h => {
+                Object.entries(h.errors || {}).forEach(([tag, n]) => counts[tag] = (counts[tag] || 0) + n);
+            });
+            const top = Object.entries(counts).filter(([tag]) => ERRORS[tag]).sort((a, b) => b[1] - a[1]).slice(0, 3);
+            const box = $('history-errors');
+            box.innerHTML = '';
+            if (top.length) {
+                const p = document.createElement('p');
+                p.textContent = 'הטעויות הנפוצות שלך לאחרונה: ' + top.map(([tag, n]) => `${ERRORS[tag].label} (${n})`).join(', ');
+                box.appendChild(p);
+            }
+        }
+
+        function clearHistory() {
+            if (!confirm('למחוק את כל היסטוריית התרגול?')) return;
+            try { localStorage.removeItem(STORAGE_HISTORY); } catch (e) { }
+            renderHistory();
+        }
+
+        function showIntro() {
+            clearInterval(timerInterval);
+            renderHistory();
+            showScreen('screen-intro');
+        }
+
+        function startQuiz() {
+            const types = [...document.querySelectorAll('#type-list input:checked')].map(cb => cb.value);
+            if (!types.length) {
+                $('settings-error').style.display = 'block';
+                return;
+            }
+            $('settings-error').style.display = 'none';
+
+            const count = parseInt($('count-select').value, 10);
+            orderMode = $('order-select').value;
+            timerMode = $('mode-select').value;
+            const rawLimit = parseInt($('time-per-q').value, 10);
+            timeLimitPerQ = Number.isNaN(rawLimit) ? 20 : Math.min(60, Math.max(5, rawLimit));
+            $('time-per-q').value = timeLimitPerQ;
+
+            save(STORAGE_SETTINGS, { types, count, order: orderMode, mode: timerMode, timeLimit: timeLimitPerQ });
+
+            isRetryRound = false;
+            runQuiz(buildQuiz(types, count, orderMode));
+        }
+
+        function retryWrong() {
+            const wrong = results.filter(r => !r.isCorrect).map(r => r.question);
+            if (!wrong.length) return;
+            isRetryRound = true;
+            runQuiz(orderMode === 'graded' ? sortByLevel(wrong) : shuffle(wrong));
+        }
+
+        function runQuiz(qs) {
+            questions = qs;
+            currentQuestionIndex = 0;
+            results = [];
+            showScreen('screen-quiz');
+            loadQuestion();
+        }
+
+        // ---------- שאלון ----------
+        function loadQuestion() {
+            const q = questions[currentQuestionIndex];
+            answered = false;
+
+            $('hud-progress').textContent = `שאלה ${currentQuestionIndex + 1} מתוך ${questions.length}`;
+            $('hud-level').textContent = `רמה: ${q.level}`;
+            $('question-text').textContent = q.text;
+
+            const feedbackBox = $('feedback-box');
+            feedbackBox.className = 'feedback';
+            feedbackBox.innerHTML = '';
+            $('next-btn').style.display = 'none';
+
+            const container = $('answers-container');
+            container.innerHTML = '';
+            shuffle(q.options).forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'answer-btn';
+                const num = document.createElement('span');
+                num.className = 'num';
+                num.textContent = `${i + 1}.`;
+                const text = document.createElement('span');
+                text.textContent = opt.text;
+                btn.append(num, text);
+                btn.optionData = opt;
+                btn.onclick = () => selectAnswer(btn);
+                container.appendChild(btn);
+            });
+
+            clearInterval(timerInterval);
+            startTime = Date.now();
+            tick();
+            timerInterval = setInterval(tick, 100);
+        }
+
+        function elapsedSeconds() {
+            return (Date.now() - startTime) / 1000;
+        }
+
+        function tick() {
+            const elapsed = elapsedSeconds();
+            if (timerMode === 'stopwatch') {
+                $('hud-timer').textContent = `זמן: ${elapsed.toFixed(1)}s`;
+                return;
+            }
+            const remaining = timeLimitPerQ - elapsed;
+            if (remaining <= 0) {
+                $('hud-timer').textContent = 'נותר: 0.0s';
+                handleTimeOut();
+            } else {
+                $('hud-timer').textContent = `נותר: ${remaining.toFixed(1)}s`;
+            }
+        }
+
+        function lockAnswers(selectedBtn) {
+            answered = true;
+            clearInterval(timerInterval);
+            document.querySelectorAll('.answer-btn').forEach(b => {
+                b.disabled = true;
+                if (b.optionData.correct) b.classList.add('correct');
+                else if (b === selectedBtn) b.classList.add('wrong');
+            });
+            const next = $('next-btn');
+            next.textContent = currentQuestionIndex + 1 < questions.length ? 'לשאלה הבאה' : 'לסיכום';
+            next.style.display = 'block';
+            next.focus({ preventScroll: true });
+        }
+
+        function recordResult(isCorrect, time, error) {
+            results.push({ question: questions[currentQuestionIndex], isCorrect, time, error });
+        }
+
+        function showFeedback(isCorrect, title, error) {
+            const q = questions[currentQuestionIndex];
+            const box = $('feedback-box');
+            box.className = 'feedback ' + (isCorrect ? 'correct' : 'incorrect');
+            box.innerHTML = '';
+
+            const t = document.createElement('span');
+            t.className = 'title';
+            t.textContent = title;
+            box.appendChild(t);
+
+            if (error) {
+                const e = document.createElement('span');
+                e.className = 'note';
+                e.textContent = `⚠️ ${ERRORS[error].label}: ${ERRORS[error].tip}`;
+                box.appendChild(e);
+            }
+
+            const ex = document.createElement('span');
+            ex.className = 'note';
+            ex.textContent = q.explanation;
+            box.appendChild(ex);
+        }
+
+        function selectAnswer(btn) {
+            if (answered) return;
+            const time = Math.max(0.1, +Math.min(elapsedSeconds(), timerMode === 'timer' ? timeLimitPerQ : Infinity).toFixed(1));
+            lockAnswers(btn);
+
+            const opt = btn.optionData;
+            recordResult(opt.correct, time, opt.error);
+            if (opt.correct) showFeedback(true, 'תשובה נכונה! כל הכבוד.', null);
+            else showFeedback(false, 'תשובה שגויה.', opt.error);
+        }
+
+        function handleTimeOut() {
+            if (answered) return;
+            lockAnswers(null);
+            recordResult(false, timeLimitPerQ, 'timeout');
+            showFeedback(false, 'הזמן נגמר!', null);
+        }
+
+        function nextQuestion() {
+            if (!answered) return;
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) loadQuestion();
+            else showSummary();
+        }
+
+        // ---------- סיכום ----------
+        function addRow(tbody, cells, classes = []) {
+            const tr = document.createElement('tr');
+            cells.forEach((c, i) => {
+                const td = document.createElement('td');
+                td.textContent = c;
+                if (classes[i]) td.className = classes[i];
+                tr.appendChild(td);
+            });
+            tbody.appendChild(tr);
+        }
+
+        function showSummary() {
+            showScreen('screen-summary');
+
+            const total = results.length;
+            const correct = results.filter(r => r.isCorrect).length;
+            const avgTime = (results.reduce((acc, r) => acc + r.time, 0) / total).toFixed(1);
+
+            $('summary-overview').innerHTML =
+                `ענית נכון על <strong>${correct}</strong> מתוך <strong>${total}</strong> שאלות` +
+                (isRetryRound ? ' (סבב חזרה על שגויות)' : '') + '.<br>' +
+                `זמן ממוצע לשאלה: <strong>${avgTime} שניות</strong>.`;
+
+            // טעויות לפי סוג
+            const errorCounts = {};
+            results.filter(r => r.error).forEach(r => errorCounts[r.error] = (errorCounts[r.error] || 0) + 1);
+            const errorRows = $('error-rows');
+            errorRows.innerHTML = '';
+            Object.entries(errorCounts).sort((a, b) => b[1] - a[1]).forEach(([tag, n]) => {
+                addRow(errorRows, [ERRORS[tag].label, n, ERRORS[tag].tip], ['', 'bad', 'text']);
+            });
+            $('errors-section').style.display = Object.keys(errorCounts).length ? 'block' : 'none';
+
+            // נכונות לפי סוג שאלה
+            const byType = {};
+            results.forEach(r => {
+                const b = byType[r.question.type] || (byType[r.question.type] = { n: 0, ok: 0, time: 0 });
+                b.n++;
+                b.time += r.time;
+                if (r.isCorrect) b.ok++;
+            });
+            const typeRows = $('type-rows');
+            typeRows.innerHTML = '';
+            Object.entries(byType)
+                .sort((a, b) => LEVEL_ORDER[TYPES[a[0]].level] - LEVEL_ORDER[TYPES[b[0]].level])
+                .forEach(([key, b]) => {
+                    addRow(typeRows, [TYPES[key].name, `${b.ok}/${b.n}`, `${(b.time / b.n).toFixed(1)}s`],
+                        ['text', b.ok === b.n ? 'ok' : 'bad', '']);
+                });
+
+            // פירוט
+            const tbody = $('stats-rows');
+            tbody.innerHTML = '';
+            results.forEach((r, i) => {
+                addRow(tbody, [
+                    i + 1,
+                    TYPES[r.question.type].name,
+                    r.isCorrect ? 'נכון' : `שגוי — ${ERRORS[r.error].label}`,
+                    `${r.time}s`
+                ], ['', 'text', r.isCorrect ? 'ok' : 'bad', '']);
+            });
+
+            const wrongCount = total - correct;
+            const retryBtn = $('retry-btn');
+            retryBtn.style.display = wrongCount ? 'inline-block' : 'none';
+            retryBtn.textContent = `תרגל שוב רק את השגויות (${wrongCount})`;
+
+            const history = load(STORAGE_HISTORY, []);
+            history.push({ ts: Date.now(), total, correct, avgTime: +avgTime, errors: errorCounts, retry: isRetryRound });
+            save(STORAGE_HISTORY, history.slice(-100));
+        }
+
+        // ---------- קיצורי מקלדת ----------
+        document.addEventListener('keydown', (e) => {
+            if (!$('screen-quiz').classList.contains('active')) return;
+            if (e.ctrlKey || e.metaKey || e.altKey) return;
+            if (!answered && /^[1-4]$/.test(e.key)) {
+                const btn = document.querySelectorAll('.answer-btn')[+e.key - 1];
+                if (btn) {
+                    e.preventDefault();
+                    selectAnswer(btn);
+                }
+            } else if (answered && e.key === 'Enter') {
+                // מונע גם "לחיצה" כפולה על כפתור הבא כשהוא בפוקוס
+                e.preventDefault();
+                nextQuestion();
+            }
+        });
+
+        renderTypeList();
+        renderHistory();
+    </script>
+
+</body>
+
+</html>
